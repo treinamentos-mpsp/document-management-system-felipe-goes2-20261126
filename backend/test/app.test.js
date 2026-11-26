@@ -57,6 +57,19 @@ test('upload, listagem e download de documentos', async () => {
 
     const missingDownload = await fetch(`${baseUrl}/documents/unknown/download`);
     assert.strictEqual(missingDownload.status, 404);
+
+    for (let request = 0; request < 58; request += 1) {
+      const response = await fetch(
+        `${baseUrl}/documents/${uploadedDocument.id}/download`,
+      );
+      assert.strictEqual(response.status, 200);
+      await response.arrayBuffer();
+    }
+
+    const rateLimitedDownload = await fetch(
+      `${baseUrl}/documents/${uploadedDocument.id}/download`,
+    );
+    assert.strictEqual(rateLimitedDownload.status, 429);
   } finally {
     await new Promise((resolve, reject) => {
       server.close((error) => (error ? reject(error) : resolve()));

@@ -19,12 +19,41 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const storageDirectory = path.join(__dirname, '../storage');
 const documents = new Map();
+const downloadRequests = new Map();
 const upload = multer({
   storage: multer.diskStorage({
     destination: storageDirectory,
     filename: (req, file, callback) => callback(null, randomUUID()),
   }),
 });
+
+function limitDownloads(req, res, next) {
+  const now = Date.now();
+  let requests = downloadRequests.get(req.ip);
+
+  if (!requests || now - requests.startedAt >= 60_000) {
+    if (downloadRequests.size >= 1000) {
+      for (const [ip, entry] of downloadRequests) {
+        if (now - entry.startedAt >= 60_000) {
+          downloadRequests.delete(ip);
+        }
+      }
+      if (downloadRequests.size >= 1000) {
+        downloadRequests.delete(downloadRequests.keys().next().value);
+      }
+    }
+
+    requests = { startedAt: now, count: 0 };
+    downloadRequests.set(req.ip, requests);
+  }
+
+  if (requests.count >= 60) {
+    return res.status(429).json({ error: 'Limite de downloads excedido.' });
+  }
+
+  requests.count += 1;
+  return next();
+}
 
 app.use(express.json());
 
@@ -55,13 +84,18 @@ app.get('/documents', (req, res) => {
   res.json(result);
 });
 
-app.get('/documents/:id/download', (req, res) => {
+app.get('/documents/:id/download', limitDownloads, (req, res) => {
   const document = documents.get(req.params.id);
   if (!document) {
     return res.status(404).json({ error: 'Documento não encontrado.' });
   }
 
-  return res.download(path.join(storageDirectory, document.filename), document.name);
+  const filePath = path.resolve(storageDirectory, document.filename);
+  if (!filePath.startsWith(`${storageDirectory}${path.sep}`)) {
+    return res.status(404).json({ error: 'Documento não encontrado.' });
+  }
+
+  return res.download(filePath, document.name);
 });
 
 if (require.main === module) {
