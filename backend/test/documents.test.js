@@ -80,3 +80,44 @@ test('upload, listagem e download respeitam os contratos e o dono', async () => 
   assert.equal(response.status, 500);
   assert.ok((await response.json()).error);
 });
+
+test('rejeita entrada malformada e excesso de campos multipart', async () => {
+  const baseUrl = `http://127.0.0.1:${server.address().port}`;
+  const headers = { 'X-User-Id': 'usuario-1' };
+  let response = await fetch(`${baseUrl}/upload`, {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+    body: 'invalido',
+  });
+  assert.equal(response.status, 400);
+  assert.ok((await response.json()).error);
+
+  response = await fetch(`${baseUrl}/upload`, {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: '{',
+  });
+  assert.equal(response.status, 400);
+
+  const form = new FormData();
+  for (let index = 0; index < 9; index += 1) form.append(`campo${index}`, 'valor');
+  form.append('file', new Blob(['ok']), 'teste.txt');
+  response = await fetch(`${baseUrl}/upload`, { method: 'POST', headers, body: form });
+  assert.equal(response.status, 400);
+});
+
+test('preserva nomes Unicode e não usa caminhos enviados pelo cliente', async () => {
+  const baseUrl = `http://127.0.0.1:${server.address().port}`;
+  const form = new FormData();
+  form.append('file', new Blob(['ok']), '../../ação.pdf');
+  const response = await fetch(`${baseUrl}/upload`, {
+    method: 'POST',
+    headers: { 'X-User-Id': 'usuario-unicode' },
+    body: form,
+  });
+  assert.equal(response.status, 201);
+  const document = await response.json();
+  assert.equal(document.originalName, 'ação.pdf');
+  assert.ok(!('storedName' in document));
+  assert.ok(fs.readdirSync(storageDir).some((name) => /^[\da-f-]+\.pdf$/.test(name)));
+});

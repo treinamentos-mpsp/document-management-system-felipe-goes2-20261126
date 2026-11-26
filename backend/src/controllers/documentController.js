@@ -1,5 +1,10 @@
 const service = require('../services/documentService');
 
+function publicDocument(document) {
+  const { storedName, ...metadata } = document;
+  return metadata;
+}
+
 function requireUser(req, res, next) {
   const owner = req.get('X-User-Id')?.trim();
   if (!owner) return res.status(400).json({ error: 'Informe o cabeçalho X-User-Id.' });
@@ -9,11 +14,17 @@ function requireUser(req, res, next) {
 
 function upload(req, res) {
   if (!req.file) return res.status(400).json({ error: 'Informe um arquivo no campo file.' });
-  return res.status(201).json(service.create(req.file, req.owner));
+  const metadata = {
+    originalName: req.file.originalname,
+    storedName: req.file.filename,
+    mimeType: req.file.mimetype,
+    size: req.file.size,
+  };
+  return res.status(201).json(publicDocument(service.create(metadata, req.owner)));
 }
 
 function list(req, res) {
-  res.json(service.list(req.owner));
+  res.json(service.list(req.owner).map(publicDocument));
 }
 
 function download(req, res) {

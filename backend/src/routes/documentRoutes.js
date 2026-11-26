@@ -1,23 +1,34 @@
 const express = require('express');
 const multer = require('multer');
-const fs = require('node:fs');
-const path = require('node:path');
-const { randomUUID } = require('node:crypto');
-const { storageDir, maxUploadSize } = require('../config');
+const { rateLimit } = require('express-rate-limit');
+const { maxUploadSize, maxUploadsPerWindow } = require('../config');
+const { storage } = require('../repositories/fileStorage');
 const controller = require('../controllers/documentController');
 
-const storage = multer.diskStorage({
-  destination(req, file, callback) {
-    fs.mkdir(storageDir, { recursive: true }, (error) => callback(error, storageDir));
-  },
-  filename(req, file, callback) {
-    callback(null, `${randomUUID()}${path.extname(file.originalname)}`);
-  },
+const upload = multer({
+  storage,
+  defParamCharset: 'utf8',
+  limits: { fileSize: maxUploadSize, fields: 8, parts: 10, fieldSize: 1024 },
 });
-const upload = multer({ storage, limits: { fileSize: maxUploadSize + 1 } });
 const router = express.Router();
+const uploadRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: maxUploadsPerWindow,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: 'Limite de uploads atingido. Tente novamente mais tarde.' },
+});
 
-router.post('/upload', controller.requireUser, upload.single('file'), controller.upload);
+function parseUpload(req, res, next) {
+  upload.single('file')(req, res, (error) => {
+    if (error && ['Multipart: Boundary not found', 'Unexpected end of form', 'Malformed part header'].includes(error.message)) {
+      error.status = 400;
+    }
+    next(error);
+  });
+}
+
+router.post('/upload', controller.requireUser, uploadRateLimit, parseUpload, controller.upload);
 router.get('/documents', controller.requireUser, controller.list);
 router.get('/documents/:id/download', controller.requireUser, controller.download);
 

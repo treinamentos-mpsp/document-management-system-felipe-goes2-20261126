@@ -19,6 +19,9 @@ app.use((error, req, res, next) => {
     const status = error.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
     return res.status(status).json({ error: status === 413 ? 'Arquivo excede o tamanho máximo.' : 'Upload inválido.' });
   }
+  if (error.status === 400 || error.status === 413) {
+    return res.status(error.status).json({ error: error.status === 413 ? 'Requisição excede o tamanho máximo.' : 'Requisição inválida.' });
+  }
   return res.status(500).json({ error: 'Não foi possível processar a requisição.' });
 });
 
