@@ -18,6 +18,13 @@ const uploadRateLimit = rateLimit({
   legacyHeaders: false,
   message: { error: 'Limite de uploads atingido. Tente novamente mais tarde.' },
 });
+const downloadRateLimit = rateLimit({
+  windowMs: 60_000,
+  limit: 60,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: 'Limite de downloads excedido.' },
+});
 
 function parseUpload(req, res, next) {
   upload.single('file')(req, res, (error) => {
@@ -30,6 +37,6 @@ function parseUpload(req, res, next) {
 
 router.post('/upload', controller.requireUser, uploadRateLimit, parseUpload, controller.upload);
 router.get('/documents', controller.requireUser, controller.list);
-router.get('/documents/:id/download', controller.requireUser, controller.download);
+router.get('/documents/:id/download', downloadRateLimit, controller.requireUser, controller.download);
 
 module.exports = router;

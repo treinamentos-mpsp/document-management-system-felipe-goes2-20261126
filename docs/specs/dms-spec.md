@@ -142,6 +142,7 @@ prefixo `/api`, removido pelo proxy do Vite (ex.: `/api/upload` -> `/upload`).
 - Erros:
   - 400: cabeçalho `X-User-Id` ausente
   - 404: documento inexistente ou pertencente a outro usuário
+  - 429: limite de 60 requisições de download por IP em 60 segundos atingido
   - 500: arquivo não encontrado no disco ou falha de leitura
 
 ### Formato de erro (comum)
