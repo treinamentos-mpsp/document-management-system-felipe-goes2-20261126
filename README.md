@@ -1,44 +1,35 @@
-# Document Management System com GitHub Copilot
+<div align="center">
 
-<img src="https://octodex.github.com/images/Professortocat_v2.png" align="right" height="200px" />
+# 🎉 Congratulations felipegoesmpsp! 🎉
 
-Hey felipegoesmpsp!
+<img src="https://octodex.github.com/images/welcometocat.png" height="200px" />
 
-Mona here. I'm done preparing your exercise. Hope you enjoy! 💚
+### 🌟 You've successfully completed the exercise! 🌟
 
-Remember, it's self-paced so feel free to take a break! ☕️
+## 🚀 Share Your Success!
 
-[![](https://img.shields.io/badge/Go%20to%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/treinamentos-mpsp/document-management-system-felipe-goes2-20261126/issues/1)
+**Show off your new skills and inspire others!**
 
----
+<a href="https://twitter.com/intent/tweet?text=I%20just%20completed%20the%20%22Document%20Management%20System%20com%20GitHub%20Copilot%22%20GitHub%20Skills%20hands-on%20exercise!%20%F0%9F%8E%89%0A%0Ahttps%3A%2F%2Fgithub.com%2Ftreinamentos-mpsp%2Fdocument-management-system-felipe-goes2-20261126%0A%0A%23GitHubSkills%20%23OpenSource%20%23GitHubLearn" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Share%20on%20X-1da1f2?style=for-the-badge&logo=x&logoColor=white" alt="Share on X" />
+</a>
+<a href="https://bsky.app/intent/compose?text=I%20just%20completed%20the%20%22Document%20Management%20System%20com%20GitHub%20Copilot%22%20GitHub%20Skills%20hands-on%20exercise!%20%F0%9F%8E%89%0A%0Ahttps%3A%2F%2Fgithub.com%2Ftreinamentos-mpsp%2Fdocument-management-system-felipe-goes2-20261126%0A%0A%23GitHubSkills%20%23OpenSource%20%23GitHubLearn" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Share%20on%20Bluesky-0085ff?style=for-the-badge&logo=bluesky&logoColor=white" alt="Share on Bluesky" />
+</a>
+<a href="https://www.linkedin.com/feed/?shareActive=true&text=I%20just%20completed%20the%20%22Document%20Management%20System%20com%20GitHub%20Copilot%22%20GitHub%20Skills%20hands-on%20exercise!%20%F0%9F%8E%89%0A%0Ahttps%3A%2F%2Fgithub.com%2Ftreinamentos-mpsp%2Fdocument-management-system-felipe-goes2-20261126%0A%0A%23GitHubSkills%20%23OpenSource%20%23GitHubLearn" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Share%20on%20LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Share on LinkedIn" />
+</a>
 
-## Executando o DMS
+### 🎯 What's Next?
 
-Instale as dependências em `backend` e `frontend` com `npm install`. Execute
-`npm start` no backend e `npm run dev` no frontend. O Vite encaminha `/api`
-para o backend na porta 3000 durante o desenvolvimento.
+**Keep the momentum going!**
 
-O backend usa `PORT` (padrão `3000`), `STORAGE_DIR` (padrão
-`backend/storage`), `MAX_UPLOAD_SIZE_BYTES` (padrão 10 MB) e
-`MAX_UPLOADS_PER_WINDOW` (padrão 100 requisições por IP a cada 15 minutos).
-Uploads também aceitam no máximo oito campos de texto e dez partes multipart.
+[![](https://img.shields.io/badge/Return%20to%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/treinamentos-mpsp/document-management-system-felipe-goes2-20261126/issues/1)
+[![GitHub Skills](https://img.shields.io/badge/Explore%20GitHub%20Skills-000000?style=for-the-badge&logo=github&logoColor=white)](https://learn.github.com/skills)
 
-Para uma publicação estática, execute `npm run build` no frontend e configure
-o servidor web para encaminhar `/api/` ao backend, removendo o prefixo `/api`.
-O proxy do Vite não é aplicado automaticamente à versão compilada. Proteja o
-acesso externo com HTTPS e controle de acesso adequado.
+*There's no better way to learn than building things!* 🚀
 
-O cabeçalho `X-User-Id` é uma identificação provisória, não autenticação.
-Metadados e contadores de limite de taxa ficam na memória de cada processo e
-são perdidos ao reiniciar; arquivos existentes não são recuperados nem
-excluídos automaticamente. Em múltiplas instâncias, o limite não é compartilhado.
-Configure limites de taxa no proxy e cota do volume de armazenamento, pois o
-limite por arquivo não impede o esgotamento do disco. Atrás de proxy reverso,
-configure o endereço IP confiável com cuidado para evitar rate limiting
-incorreto ou cabeçalhos de origem falsificados.
-
-Execute os testes com `npm test` em `backend` e com
-`node --test frontend/test/documentApi.test.js` na raiz do projeto.
+</div>
 
 ---
 
