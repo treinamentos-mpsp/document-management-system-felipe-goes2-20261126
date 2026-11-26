@@ -60,6 +60,7 @@ nesta fase inicial.
 | `PORT`                  | `3000`                   | Porta HTTP do backend                 |
 | `STORAGE_DIR`           | `backend/storage`        | Pasta de gravação dos arquivos        |
 | `MAX_UPLOAD_SIZE_BYTES` | `10485760` (10 MB)       | Tamanho máximo de upload em bytes     |
+| `MAX_UPLOADS_PER_WINDOW` | `100`                   | Máximo de requisições de upload por IP a cada 15 minutos |
 
 ## 5. Modelo de dados (metadados do documento)
 
@@ -110,6 +111,7 @@ prefixo `/api`, removido pelo proxy do Vite (ex.: `/api/upload` -> `/upload`).
 - Erros:
   - 400: campo `file` ausente ou cabeçalho `X-User-Id` ausente
   - 413: arquivo acima de `MAX_UPLOAD_SIZE_BYTES`
+  - 429: limite de requisições de upload por IP atingido
   - 500: falha ao gravar o arquivo
 
 ### GET /documents

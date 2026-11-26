@@ -32,3 +32,14 @@ export async function downloadDocument(id, userId) {
   const response = await request(`/documents/${encodeURIComponent(id)}/download`, userId);
   return response.blob();
 }
+
+export async function downloadDocumentToFile(id, userId, fileHandle) {
+  const response = await request(`/documents/${encodeURIComponent(id)}/download`, userId);
+  const writable = await fileHandle.createWritable();
+  if (response.body) {
+    await response.body.pipeTo(writable);
+  } else {
+    await writable.write(await response.blob());
+    await writable.close();
+  }
+}

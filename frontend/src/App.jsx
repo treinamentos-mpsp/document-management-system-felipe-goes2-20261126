@@ -8,6 +8,7 @@ import './App.css';
 export default function App() {
   const [userInput, setUserInput] = useState('');
   const [userId, setUserId] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [revision, setRevision] = useState(0);
   const [listing, setListing] = useState({ owner: '', documents: [], loading: false, error: '' });
 
@@ -28,7 +29,7 @@ export default function App() {
   function selectUser(event) {
     event.preventDefault();
     const nextUser = userInput.trim();
-    if (!nextUser) return;
+    if (!nextUser || uploading) return;
     setUserInput(nextUser);
     if (nextUser === userId) setRevision((value) => value + 1);
     else setUserId(nextUser);
@@ -62,8 +63,8 @@ export default function App() {
           </div>
           <form className="identity-form" onSubmit={selectUser}>
             <label className="sr-only" htmlFor="user-id">Identificador do usuário</label>
-            <input id="user-id" value={userInput} onChange={(event) => setUserInput(event.target.value)} placeholder="Seu identificador" required />
-            <button type="submit" disabled={!userInput.trim()}>Acessar <ArrowRight size={16} /></button>
+            <input id="user-id" value={userInput} onChange={(event) => setUserInput(event.target.value)} placeholder="Seu identificador" disabled={uploading} required />
+            <button type="submit" disabled={!userInput.trim() || uploading}>Acessar <ArrowRight size={16} /></button>
           </form>
         </section>
 
@@ -80,7 +81,7 @@ export default function App() {
             <p className="section-kicker">NOVO DOCUMENTO <span>/ 03</span></p>
             <h2 id="upload-title">Adicionar arquivo</h2>
             <p className="upload-description">Envie um documento para seu espaço pessoal.</p>
-            <UploadComponent key={userId} userId={userId} onUploaded={() => setRevision((value) => value + 1)} />
+            <UploadComponent key={userId} userId={userId} onUploadingChange={setUploading} onUploaded={() => setRevision((value) => value + 1)} />
           </aside>
         </div>
       </main>

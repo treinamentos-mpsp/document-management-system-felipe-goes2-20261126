@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { ArrowUpRight, FileUp, LoaderCircle } from 'lucide-react';
 import { uploadDocument } from '../services/documentApi.js';
 
-export default function UploadComponent({ userId, onUploaded }) {
+export default function UploadComponent({ userId, onUploaded, onUploadingChange }) {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -12,6 +12,7 @@ export default function UploadComponent({ userId, onUploaded }) {
     event.preventDefault();
     if (!file || !userId || uploading) return;
     setUploading(true);
+    onUploadingChange(true);
     setMessage(null);
     try {
       await uploadDocument(file, userId);
@@ -23,6 +24,7 @@ export default function UploadComponent({ userId, onUploaded }) {
       setMessage({ type: 'error', text: error.message });
     } finally {
       setUploading(false);
+      onUploadingChange(false);
     }
   }
 
